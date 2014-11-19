@@ -6,14 +6,6 @@ using System.Threading.Tasks;
 
 namespace CageNight.Classes
 {
-        public enum TESTENUM
-        {
-            LOL,
-            ERE, 
-            NO,
-            yes
-        }
-
         public enum RentTabListViewColumnIndex
         {
             VideoID,
