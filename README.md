@@ -8,8 +8,6 @@ CageNightSolution_141119_1546
 
 		- Clean and remove unnessecary code.
 
-		- Rewrite the Get-Method to check for other properties than just the ID when sending a whole item.
-
 		- Implement IComparer or IComparable interface to compare collection-items ( Video, Genre, Customer or VideoBooking ) 
 
 		- Use a class specififying structs for each type, instead of whole Objects when getting an item from the database.
@@ -49,3 +47,5 @@ FIXED! The GetCollection-methods from Booking throws an exception wich messes up
 FIXED! Fix UpdateAndFillMaintenance-tab to ONLY update specific groups! ( Video, Customer, Genre ).
 
 FIXED! Migrate Add, Update and Delete button-functions to FormFunctions!
+
+FIXED! Rewrite the Get-Method to check for other properties than just the ID when sending a whole item.
