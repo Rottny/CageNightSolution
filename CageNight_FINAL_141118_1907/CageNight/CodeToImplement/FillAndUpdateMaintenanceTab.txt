@@ -1,0 +1,111 @@
+﻿	
+	++++++++++ USED FOR SELECTING THE PREVIOUSLY SELECTED ITEM (BEFORE THE UPDATE) 
+		       IN EACH COMBOBOX IN MAINTENANCETAB
+	
+	
+	//VARIABLES
+        private Video oldSelectedVideo = null;
+        private Genre oldSelectedVideoGenre = null;
+        private Customer oldSelectedCustomer = null;
+        private Genre oldSelectedGenre = null;
+	//VARIABLES
+
+	// IN UpdateAndFillMaintenaceTab() //
+
+				/** AFTER FIRST UPDATE, SELECT OLD ITEMS! */
+                if (NrOfUpdates > 1)
+                {
+                    oldSelectedVideo = (Video)cboMainTabVideo.SelectedItem;
+                    oldSelectedVideoGenre = (Genre)cboMainTabVideoGenre.SelectedItem;
+                    oldSelectedCustomer = (Customer)cboMainTabCustomer.SelectedItem;
+                    oldSelectedGenre = (Genre)cboMainTabGenre.SelectedItem;
+                }
+
+				  /// VIDEOS /////
+				  /** AFTER FIRST UPDATE */
+                    if (NrOfUpdates > 1)
+                    {
+                        /** Find the old Video in the newly updated ComboBox-list */
+                        int videoIndexer = 0;
+                        int videoCount = cboMainTabVideo.Items.Count;
+
+                        for (int i = 0; i < videoCount; i++)
+                        {
+                            if (((Video)cboMainTabVideo.Items[i]).Name.Equals(oldSelectedVideo.Name))
+                            {
+                                /** Found a match for the old Video-name, indexer has current value! */
+                                videoIndexer = i;
+                                break;
+                            }
+                        }
+
+                        /** Select the old Video in ComboBox */
+                        cboMainTabVideo.SelectedIndex = videoIndexer;
+                        txtMainTabVideo.Text = ((Video)cboMainTabVideo.SelectedItem).Name;
+                    }
+                    else
+                    {
+                        /** FIRST UPDATE! Select the default Video in ComboBox */
+                        cboMainTabVideo.SelectedIndex = 0;
+                        txtMainTabVideo.Text = ((Video)cboMainTabVideo.SelectedItem).Name;
+                    }
+					/// VIDEOS /////
+
+
+					// CUSTOMERS ///
+					 if (NrOfUpdates > 1)
+                    {
+
+                        /** Find the old Customer in the newly updated ComboBox-list */
+                        int customerIndexer = 0;
+                        int customerCount = cboMainTabCustomer.Items.Count;
+
+                        for (int i = 0; i < customerCount; i++)
+                        {
+                            if (((Customer)cboMainTabCustomer.Items[i]).Name.Equals(oldSelectedCustomer.Name))
+                            {
+                                /** Found a match for the old Customer-name, indexer has current value! */
+                                customerIndexer = i;
+                                break;
+                            }
+                        }
+                        /** Select the old Customer in the newly updated ComboBox-list! */
+                        cboMainTabCustomer.SelectedIndex = customerIndexer;
+                    }
+                    else
+                    {
+                        /** FIRST UPDATE! Select the default Genre in ComboBox */
+                        cboMainTabCustomer.SelectedIndex = 0;
+                    }
+					// CUSTOMERS ///
+
+					// GENRES //
+					if (NrOfUpdates > 1)
+                    {
+                        /** Find the old Genre in the newly updated ComboBox-list, 
+                         * (only need to check one list, they have the same amount of items!) */
+                        int genreIndexer = 0;
+                        int genreCount = cboMainTabGenre.Items.Count;
+
+                        for ( int i = 0; i < genreCount; i ++)
+                        {
+                            if (((Genre)cboMainTabGenre.Items[i]).Name.Equals(oldSelectedGenre.Name))
+                            {
+                                /** Found a match for the old Genre-name, indexer has current value! */
+                                genreIndexer = i;
+                                break;
+                            }
+                        }
+
+                        /** Select the old Genre in the newly update ComboBox-list! */
+                        cboMainTabGenre.SelectedIndex = genreIndexer;
+                        cboMainTabVideoGenre.SelectedIndex = genreIndexer;
+                    }
+                    else
+                    {
+                        /** Select the default Genre in the newly update ComboBox-list! */
+                        cboMainTabGenre.SelectedIndex = 0;
+                        cboMainTabVideoGenre.SelectedIndex = 0;
+                    }
+					// GENRES //
+

@@ -1,0 +1,148 @@
+﻿ 
+********// New implementation of UpdateAndFillMaintenaceTab-method in FormFunctions by Rony @ 141111_1459
+
+***** NOTES: ********************
+	New implementation uses the Count-property from DataBase/Booking ( i.e booking.VideoCount ).
+	This avoids catching exceptions from GetCollections-methods and makes it easier to write simple IF-checks in Form.
+
+    This implementation now adds the "..empty!" - item at the top of comboboxes if no more items are available in the DataBase.
+	This makes it easier to avoid OutOfBoundException-errors when trying to fetch objects in the UI. ( make IF-statements checking for the "..empty!" string )
+	Look in GenreAddUpdateDelete_20141111_1459_Rony for current implementation!
+
+	This could be used by all the Add, Update and Delete-functions from Form1, giving us a template to work on!
+ 
+ ****** UpdateAndFillMaintenaceTab in FormFunctions ****************************************************************
+
+ internal virtual void UpdateAndFillMaintenaceTab() 
+        {
+            try
+            {
+                /** Clear old data from ComboBoxes */
+                cboMainTabVideo.Items.Clear();
+                cboMainTabVideoGenre.Items.Clear();
+                cboMainTabCustomer.Items.Clear();
+                cboMainTabGenre.Items.Clear();
+
+                List<Video> videoList = null;
+                List<Customer> customerList = null;
+                List<Genre> genreList = null;
+
+                /** Add new data to ComboBoxes*/
+                #region Videos
+                /** Check that Videos are not empty! */
+                if (booking.VideoCount != 0) 
+                {
+                    /** Get the list */
+                    videoList = booking.GetVideoCollection().ToList();
+                    
+                    /** Add data to ComboBox */
+                    foreach (Video video in videoList)
+                    {
+                        cboMainTabVideo.Items.Add(video);
+                    }
+
+                    /** Select the first Video in ComboBox */
+                    cboMainTabVideo.SelectedIndex = 0;
+                }
+
+                /** If Videos are empty, add "..empty!" to Videos */
+                else if (booking.VideoCount == 0)
+                {
+                    cboMainTabVideo.Items.Add(new Video(Guid.Empty, Guid.Empty, false, "..empty!", 0));
+
+                    /** Select the "..empty!" - Video in ComboBox */
+                    cboMainTabVideo.SelectedIndex = 0;
+                }
+                #endregion
+
+                #region Customers
+                /** Check that Customers are not empty! */
+                if (booking.CustomerCount != 0)
+                {
+                    /** Get the list */
+                    customerList = booking.GetCustomerCollection().ToList();
+
+                    /** Add data to ComboBox */
+                    foreach (Customer customer in customerList)
+                    {
+                        cboMainTabCustomer.Items.Add(customer);
+                    }
+
+                    /** Select the first Customer in ComboBox */
+                    cboMainTabCustomer.SelectedIndex = 0;
+                }
+
+                /** If Customers are empty, add "..empty!" to Customers */
+                else if (booking.CustomerCount == 0)
+                {
+                    cboMainTabCustomer.Items.Add(new Customer(Guid.Empty, "..empty!", ""));
+
+                    /** Select the "..empty!" - Customer in ComboBox */
+                    cboMainTabCustomer.SelectedIndex = 0;
+                }
+                #endregion
+
+                #region Genres
+                /** Check that Genres are not empty! */
+                if (booking.GenreCount != 0) 
+                {
+                    /** Get the list */
+                    genreList = booking.GetGenreCollection().ToList();
+
+                    /** Add data to ComboBoxes */
+                    foreach (Genre genre in genreList)
+                    {
+                        cboMainTabGenre.Items.Add(genre);
+                        cboMainTabVideoGenre.Items.Add(genre);
+                    }
+
+                    /** Select the first Genre in ComboBox Genre! */
+                    cboMainTabGenre.SelectedIndex = 0;
+                }
+
+                 /** If Genres are empty, add "..empty!" to Genres */
+                else if (booking.GenreCount == 0)
+                {
+                    cboMainTabGenre.Items.Add(new Genre(Guid.Empty, "..empty!"));
+
+                    /** Select the "..empty!" - Genre in ComboBox */
+                    cboMainTabGenre.SelectedIndex = 0;
+                }
+                #endregion
+
+                #region Select default Video and associated Genre
+                Video selectedVideo = (Video)cboMainTabVideo.SelectedItem;
+
+                /** Video & Genres contains items and first item in list IS NOT "..empty!" */
+                if (booking.VideoCount != 0 && booking.GenreCount != 0 && selectedVideo.Name != "..empty!" )
+                {
+                    /** Set Genre and VideoTitle (Grouping Videos) */
+                    cboMainTabVideoGenre.SelectedItem = booking.GetGenre( genreID: selectedVideo.GenreId, genreItem : default(Genre) ).First();
+                    txtMainTabVideo.Text = booking.GetVideo(videoID: selectedVideo.Id, videoItem : default(Video)).First().Name;
+                    return;
+                }
+
+                /** Video & Genres contains items and first item in list IS "..empty!" */
+                else if(booking.VideoCount != 0 && booking.GenreCount != 0 && selectedVideo.Name == "..empty!")
+                {
+                    /** Select first item as default! */
+                    cboMainTabVideo.SelectedIndex = 0;
+                    cboMainTabGenre.SelectedIndex = 0;
+
+                    txtMainTabVideo.Text = "..empty!";
+                    return;
+                }
+                #endregion
+
+            }
+            catch (VideoRentalException vre)
+            {
+                MessageBox.Show(String.Format("{0}", vre));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(String.Format("{0}", ex));
+            }
+        }
+
+		 ****** UpdateAndFillMaintenaceTab in FormFunctions ****************************************************************

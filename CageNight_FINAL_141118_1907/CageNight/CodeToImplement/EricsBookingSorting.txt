@@ -1,0 +1,123 @@
+﻿//ERIK BBOOKINGTAB-SORTERING
+
+		***VARIABLES***
+		//bookingsTabMarked används för att markera vilken tabb-kontroll som klickades senast
+        //När en tabb klickas första gången (och bookingsTabMarked har ett annat värde än tabben eller värde 0) ska sorteringen ske i stigande ordning (dvs. ascending)
+        //När den klickas andra (och bookingsTabMarked följaktligen har den tabbens värde) gången ska sorteringen ändras till sjunkande (och bookingsTabMarked sättas till 0)
+        private int bookingsTabMarked = 0;
+		***VARIABLES***
+
+
+		*** UPDATE LIST ***
+        private void UpdateBookingListView(ListViewBookingColumnSorting sort, bool ascending)
+        {
+            lvwBookingTab.Items.Clear();
+
+            IEnumerable<VideoBooking> bookings = booking.GetVideoBookingCollection();
+            List<VideoBooking> bookingList = bookings.ToList();
+
+            //Den IEnumerable som ska skrivas ut till slut.
+            IEnumerable<VideoBooking> bookingEnum;
+
+            List<Customer> customers = booking.GetCustomerCollection().ToList();
+            List<Video> videos = booking.GetVideoCollection().ToList();
+
+            switch(sort)
+            {
+                case ListViewBookingColumnSorting.BookingName:
+                    if (ascending)
+                        bookingEnum = from b in bookingList orderby b.Name ascending select b;
+                    else
+                        bookingEnum = from b in bookingList orderby b.Name descending select b;
+                    break;
+                case ListViewBookingColumnSorting.Cost:
+                    if (ascending)
+                        bookingEnum = from b in bookingList orderby b.Cost ascending select b;
+                    else
+                        bookingEnum = from b in bookingList orderby b.Cost descending select b;
+                    break;
+                case ListViewBookingColumnSorting.CustomerName:
+                    if (ascending)
+                        bookingEnum = from b in bookingList join c in customers on b.CustomerID equals c.Id orderby c.Name ascending select b;
+                    else
+                        bookingEnum = from b in bookingList join c in customers on b.CustomerID equals c.Id orderby c.Name descending select b;
+                    break;
+                case ListViewBookingColumnSorting.RentDate:
+                    if (ascending)
+                        bookingEnum = from b in bookingList orderby b.RentDate ascending select b;
+                    else
+                        bookingEnum = from b in bookingList orderby b.RentDate descending select b;
+                    break;
+                case ListViewBookingColumnSorting.ReturnedDate:
+                    if (ascending)
+                        bookingEnum = from b in bookingList orderby b.ReturnedDate ascending select b;
+                    else
+                        bookingEnum = from b in bookingList orderby b.ReturnedDate descending select b;
+                    break;
+                case ListViewBookingColumnSorting.VideoTitle:
+                    if (ascending)
+                        bookingEnum = from b in bookingList join v in videos on b.VideoID equals v.Id orderby v.Name ascending select b;
+                    else
+                        bookingEnum = from b in bookingList join v in videos on b.VideoID equals v.Id orderby v.Name descending select b;
+                    break;
+                default:
+                    bookingEnum = from b in bookingList orderby b.RentDate ascending select b;
+                    break;
+            }
+
+            UpdateBookingListViewToList(bookingEnum);
+        }
+		
+        //Skriver ut i tabellen värdena som UpdateBookingListView just har sorterat
+        private void UpdateBookingListViewToList(IEnumerable<VideoBooking> bookingList)
+        {
+            foreach (VideoBooking bookingItem in bookingList)
+            {
+                string[] tmpString = new string[7];
+                tmpString[0] = bookingItem.Id.ToString();
+                tmpString[1] = bookingItem.Name;
+                tmpString[2] = booking.GetCustomer(customerID: bookingItem.CustomerID).First().Name;
+                tmpString[3] = booking.GetVideo(videoID: bookingItem.VideoID).First().Name;
+                tmpString[4] = bookingItem.RentDate.ToString();
+                tmpString[5] = bookingItem.ReturnedDate.Equals(DateTime.MinValue) ? "Not Returned" : bookingItem.ReturnedDate.ToString();
+                tmpString[6] = bookingItem.Cost.ToString();
+
+                lvwBookingTab.Items.Add(new ListViewItem(tmpString));
+            }
+        }
+		*** UPDATE LIST ***
+
+		*** CLICK EVENT FOR LISTVIEW COLUMNS *** 
+        //Sortering för Bookings-tabben
+        private void lvwBookingTab_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            //bookingsTabMarked används för att markera vilken tabb-kontroll som klickades senast
+            //Om en tabb-kontroll som redan är klickad väljs igen, ska den räknas som ej klickad
+            if (e.Column == bookingsTabMarked)
+                bookingsTabMarked = 0;
+            else
+                bookingsTabMarked = e.Column;
+
+            switch (e.Column)
+            {
+                case 1:
+                    UpdateBookingListView(ListViewBookingColumnSorting.BookingName, (bookingsTabMarked == 1) ? true : false);
+                    break;
+                case 2:
+                    UpdateBookingListView(ListViewBookingColumnSorting.CustomerName, (bookingsTabMarked == 2) ? true : false);
+                    break;
+                case 3:
+                    UpdateBookingListView(ListViewBookingColumnSorting.VideoTitle, (bookingsTabMarked == 3) ? true : false);
+                    break;
+                case 4:
+                    UpdateBookingListView(ListViewBookingColumnSorting.RentDate, (bookingsTabMarked == 4) ? true : false);
+                    break;
+                case 5:
+                    UpdateBookingListView(ListViewBookingColumnSorting.ReturnedDate, (bookingsTabMarked == 5) ? true : false);
+                    break;
+                case 6:
+                    UpdateBookingListView(ListViewBookingColumnSorting.Cost, (bookingsTabMarked == 6) ? true : false);
+                    break;
+            }
+        }
+		*** CLICK EVENT FOR LISTVIEW COLUMNS *** 

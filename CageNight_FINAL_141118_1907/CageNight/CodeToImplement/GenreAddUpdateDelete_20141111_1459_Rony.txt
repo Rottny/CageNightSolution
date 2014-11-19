@@ -1,0 +1,209 @@
+﻿
+********// New implementation of ADD UPDATE AND DELETE methods in Maintenance by Rony @ 141111_1459
+
+***** NOTES: ********************
+	I've just gone through the assignment spec and revised the code for Genres Update, Add and Delete to the exact specifications,
+	..including some modified behaviour resulting from FormFunctions.FillAndUpdateAllTabs (FillAndUpdateMaintenanceTab).
+	Look in the FillAndUpdateMaintenanceTab.txt -file for reference!
+
+	ADD in Booking - I had to modify booking.AddGenre to make it check for a Genre with the same name but DIFFERENT GenreID:s. 
+	This is natural since the AddGenre only takes a new Genre.
+
+	ADDButton in Form1 - Modified, now also catches the thrown exception from DataBase -> Booking -> AddButton and displays it with the ex.Message property.
+
+	UPDATEButton in Form1 - Modified, now also catches the thrown exception from DataBase -> Booking -> UpdateButton and displays it with the ex.Message property.
+
+	DELETEButton in Form1 - Modified, now also catches the thrown exception from DataBase -> Booking -> UpdateButton and displays it with the ex.Message property.
+
+	All buttons now checks for the "..empty!" item, that is added to the top of the ComboBox-list if a list is empty. ( ref UpdateAndFillMaintenanceTab )
+	This makes it possible for us to check if the currently selected item has the name property set to "..empty!", thus removing the need to worry about empty lists
+	causing OutOfBoundException-errors!	
+
+	This is also in accord with the assignment spec, only propagating and displaying errors if caught from the datalayer ( Booking & DataBase )!
+	
+	Proposition: This could be a template to implement the other Categories aswell ( Video, Customer ), thus avoiding more trouble!
+	
+
+	****** ADDBUTTON! ****************************************************************
+	private void btnMainTabGenreAdd_Click_1(object sender, EventArgs e)
+        {
+            String genreToAdd = txtMainTabGenre.Text;
+
+            /** If the TextBox has input! */
+            if (genreToAdd != String.Empty)
+            {
+                try
+                {
+                    IEnumerable<Genre> genres = null;
+
+                    /** Create a new Genre-objekt with unique ID and the passed in GenreTitle */
+                    Genre newGenre = new Genre(genreToAdd);
+                    bool addGenreSuccess = booking.AddGenre(newGenre);
+
+                    /** If AddGenre was successfull and If the GenreList NOW has items */
+                    if (addGenreSuccess && booking.GenreCount != 0)
+                    {
+                        /** Update all tabs and clear the TextBox! */
+                        ff.UpdateAndFillAllTabs();
+                        txtMainTabGenre.Clear();
+
+                        /** Get the GenreList */
+                        genres = booking.GetGenreCollection();
+                        List<Genre> genrelist = genres.ToList();
+
+                        /** Find the newly added Genre */
+                        int index = 0;
+                        for (int i = 0; i < genrelist.Count; i++)
+                        {
+                            if (genrelist[i].Name == newGenre.Name)
+                                index = i;
+                        }
+
+                        /** Select the newly added Genre in the ComboBox! */
+                        cboMainTabVideoGenre.SelectedIndex = index;
+                        cboMainTabGenre.SelectedIndex = index;
+                        return;
+                    }
+                }
+
+                /** IF AddGenre failed, catch the exception From Booking */
+                catch (VideoRentalException vre)
+                {
+                    MessageBox.Show(String.Format("{0}", vre.Message));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format("{0}", ex.Message));
+                }
+            }
+
+            /** Invalid Genre-name to add! */
+            else if (genreToAdd == String.Empty)
+                MessageBox.Show(String.Format("GenreName has empty field!"));
+        }
+		****** ADDBUTTON! ****************************************************************
+
+		****** ADDGENRE IN BOOKING ****************************************************************
+		 public bool AddGenre(Genre genreItem)
+        {
+            try
+            {
+                /** GenreDictionary has items! */
+                if ( GenreCount != 0 )
+                {
+                    /** Check for an already existing Genre with the same Name-property */
+                    IEnumerable<Genre> queryForExistingGenre =
+                        from g in db.GetGenreCollection()
+                        where g.Name.Equals(genreItem.Name)
+                        select g;
+
+                    /** IF a matching GenreName already exists! */
+                    if (queryForExistingGenre.FirstOrDefault() != default(Genre))
+                    {
+                        throw new VideoRentalException(genreItem, String.Format("A Genre with the same name: {0} already exists!", genreItem.Name));
+                    }
+
+                    /** IF NO matching GenreName exists!  */
+                    else if (queryForExistingGenre.FirstOrDefault() == default(Genre))
+                    {
+                        return db.AddGenre(genreItem);
+                    }
+                }
+                throw new VideoRentalException(genreItem, String.Format("No Genres exists in datasource!"));
+            }
+            catch (VideoRentalException ex)
+            {
+                throw ex;
+            }
+        }
+		******* ADDGENRE IN BOOKING ****************************************************************
+
+		******* UPDATEBUTTON ****************************************************************
+		 private void btnMainTabGenreUpdate_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                String newGenreName = txtMainTabGenre.Text;
+                Genre genreToUpdate = ((Genre)cboMainTabGenre.SelectedItem);
+
+                /** If the TextBox has input and If the ComboBox has a valid Genre selected! */
+                if (newGenreName != String.Empty && genreToUpdate.Name != "..empty!")
+                {
+                    IEnumerable<Genre> genres = null;
+
+                    /** If UpdateGenre was successfull! */
+                    if (booking.UpdateGenre(new Genre(genreToUpdate.Id, newGenreName)))
+                    {
+                        /** Clear the TextBox and update all tabs! */
+                        txtMainTabGenre.Clear();
+                        ff.UpdateAndFillAllTabs();
+
+                        /** Get the new GenreList */
+                        genres = booking.GetGenreCollection();
+                        List<Genre> genrelist = genres.ToList();
+
+                        /** Find the newly added Genre in ComboBox-list */
+                        int index = 0;
+                        for (int i = 0; i < genrelist.Count; i++)
+                        {
+                            if (genrelist[i].Name == newGenreName)
+                                index = i;
+                        }
+
+                        /** Select the newly added Genre in ComboBox-list */
+                        cboMainTabVideoGenre.SelectedIndex = index;
+                        cboMainTabGenre.SelectedIndex = index;
+                        return;
+                    }
+                }
+            }
+            catch (VideoRentalException vre)
+            {
+                 MessageBox.Show(String.Format("Could not update genre: \n{0} !!", vre.Message));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(String.Format("Exception: \n{0} !!", ex.Message));
+            }
+        }
+		******* UPDATEBUTTON ****************************************************************
+
+		******* DELETEBUTTON ****************************************************************
+		 private void btnMainTabGenreDelete_Click_1(object sender, EventArgs e)
+        {
+            Genre genreToDelete = (Genre)cboMainTabGenre.SelectedItem;
+
+            /** If the ComboBox has a valid Genre Selected! */
+            if (genreToDelete.Name != "..empty!")
+            {
+                try
+                {
+                    /** IF delete was successfull! */
+                    if (booking.DeleteGenre(genreToDelete))
+                    {
+                        /** Update all tabs and clear the TextBox! */
+                        ff.UpdateAndFillAllTabs();
+                        txtMainTabGenre.Clear();
+
+                        /** Select the last item in ComboBox to avoid "..empty!" item!*/
+                        cboMainTabGenre.SelectedIndex = cboMainTabVideoGenre.Items.Count - 1;
+                        return;
+                    }
+                }
+
+                /** IF delete failed, catch the exception-message from Booking */
+                catch (VideoRentalException vre)
+                {
+                    MessageBox.Show(String.Format("{0}", vre.Message));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format("{0}", ex.Message));
+                }
+            }
+
+            /** Invalid Genre-selected! */
+            else if (genreToDelete.Name == "..empty!")
+                MessageBox.Show(String.Format("Unable to delete genre: {0}", genreToDelete.Name));
+        }
+		******* DELETEBUTTON ****************************************************************

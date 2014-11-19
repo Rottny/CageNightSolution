@@ -1,0 +1,7 @@
+﻿
+
++++++ BUGFIX-list:
+FIXED! ** Datumet från returnDateTimePicker blir alltid dagens datum. **
+
+
+

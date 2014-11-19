@@ -1,0 +1,42 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CageNight.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AllowedDays" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Allowed Days</Value>
+    </Setting>
+    <Setting Name="Genre" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Genre</Value>
+    </Setting>
+    <Setting Name="Film" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Film</Value>
+    </Setting>
+    <Setting Name="bIsRented" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Is Rented</Value>
+    </Setting>
+    <Setting Name="VideoID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Video ID</Value>
+    </Setting>
+    <Setting Name="VideoBookingID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BookingID</Value>
+    </Setting>
+    <Setting Name="BookingName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BookingName</Value>
+    </Setting>
+    <Setting Name="CustomerName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CustomerName</Value>
+    </Setting>
+    <Setting Name="VideoTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">VideoTitle</Value>
+    </Setting>
+    <Setting Name="RentDate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">RentDate</Value>
+    </Setting>
+    <Setting Name="ReturnedDate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ReturnedDate</Value>
+    </Setting>
+    <Setting Name="Cost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cost</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
