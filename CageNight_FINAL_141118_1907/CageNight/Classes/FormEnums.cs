@@ -9,7 +9,9 @@ namespace CageNight.Classes
         public enum TESTENUM
         {
             LOL,
-            ERE
+            ERE, 
+            NO,
+            yes
         }
 
         public enum RentTabListViewColumnIndex
