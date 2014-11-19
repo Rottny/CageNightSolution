@@ -124,10 +124,12 @@ namespace CageNight.Classes
             #region AddVideo
             if (item is Video)
             {
-                if (txtMainTabVideo.Text != String.Empty)
+               if (txtMainTabVideo.Text != String.Empty)
                 {
                     try
                     {
+                        Genre selectedGenre = MTSelectedVideoGenre;
+
                         // Add a new video with properties from comboboxes and textfields from the UI with a unique VideoID
                         Video newVideo = new Video(MTSelectedVideoGenre.Id, false, txtMainTabVideo.Text, (int)updMainTabVideo.Value);
 
@@ -138,11 +140,12 @@ namespace CageNight.Classes
                             txtMainTabVideo.Clear();
                             FindAndSetNewlyAddedItemInComboBox(newVideo);
 
-                            /** Need to set txtMainTabVideo to currently selected Video..
+                            /** Need to set txtMainTabVideo to currently selected Video, same with cboMainTabVideoGenre
                              * ..since the SelectionChangeCommited-event does not apply the new name */
                             txtMainTabVideo.Text = MTSelectedVideo.Name;
+                            cboMainTabVideoGenre.SelectedItem = selectedGenre;
 
-                            MessageBox.Show(String.Format("{0} Successfully added to database!", newVideo.Name));
+                            MessageBox.Show(String.Format("{0} : {1} Successfully added to database!", newVideo.Name, selectedGenre.Name));
                         }
                     }
                     #region Catch VideoRentalException from AddVideo!
