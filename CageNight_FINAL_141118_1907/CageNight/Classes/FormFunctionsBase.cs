@@ -14,7 +14,7 @@ namespace CageNight.Classes
 {
     internal abstract class FormFunctionsBase
     {
-        #region BindingLists, Variables, ComboBoxes, ListViews, TextBoxes, Events
+        #region Variables, ComboBoxes, ListViews, TextBoxes, Events
 
         protected bool rentbClickOneTwo;
         protected bool bookingbClickOneTwo;
@@ -578,6 +578,7 @@ namespace CageNight.Classes
                 throw ex;
             }
         }
+
         /** Eriks custom sorting-implementation, is Overridden in FormFunctions */
         internal virtual void UpdateAndSortBookingsListView ( BookingTabListViewColumnSorting sortingBy )
         {
@@ -807,7 +808,7 @@ namespace CageNight.Classes
                 clickOneTwo = false;
             }
         }
-        internal void bookingTabListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        protected void bookingTabListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
         {
             //Hide VideoBookingID on the BookingTab
             if (e.ColumnIndex == Convert.ToInt32(BookingTabListViewColumnIndex.BookingID))
@@ -819,7 +820,7 @@ namespace CageNight.Classes
                 e.Cancel = true;   
             }
         }
-        internal void rentTabListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        protected void rentTabListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
         {
             //Hide VideoID on the RentTab
             if (e.ColumnIndex == Convert.ToInt32(RentTabListViewColumnIndex.VideoID))

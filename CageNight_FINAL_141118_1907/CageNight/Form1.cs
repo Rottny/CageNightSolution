@@ -16,6 +16,9 @@ namespace CageNight
 {
     public partial class Form1 : Form
     {
+        /** Group Members:
+         *  Rony Lindgren, Mattias Ahlström, Erik Andrae, Marcus Westlund, Dennis Stegnell */
+        
         #region Variables, Events
 
         /** _db and _testdb are set in the constructor! */ 

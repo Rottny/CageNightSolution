@@ -128,6 +128,7 @@ namespace CageNight.Classes
                 {
                     try
                     {
+                        /** Save selected Genre for display in MessageBox! */
                         Genre selectedGenre = MTSelectedVideoGenre;
 
                         // Add a new video with properties from comboboxes and textfields from the UI with a unique VideoID
@@ -277,6 +278,8 @@ namespace CageNight.Classes
                     {
                         if (booking.UpdateVideo(videoToUpdate))
                         {
+                            #region Clear and set the UI after Update!
+
                             /** Clear the UI and set the newly updated Video in ComboBox! */
                             txtMainTabVideo.Clear();
                             FindAndSetNewlyAddedItemInComboBox(videoToUpdate);
@@ -310,6 +313,7 @@ namespace CageNight.Classes
                                 ));
 
                             return;
+                            #endregion
                         }
                     }
                     else MessageBox.Show("Cannot Update - Empty Field");
@@ -384,10 +388,12 @@ namespace CageNight.Classes
             {
                 try
                 {
+                    /** Save old values */
                     Genre genreToUpdate = MTSelectedGenre;
-                    String newGenreName = txtMainTabGenre.Text;
                     String genreToUpdateName = genreToUpdate.Name;
 
+                    String newGenreName = txtMainTabGenre.Text;
+                    
                     /** If the TextBox has input and If the ComboBox has a valid Genre selected! */
                     if (newGenreName != String.Empty && genreToUpdate.Name != "..empty!")
                     {
@@ -461,6 +467,7 @@ namespace CageNight.Classes
             #region DeleteCustomer
             if (item is Customer)
             {
+                /** Save old values! */
                 Customer customerToDelete = MTSelectedCustomer;
                 string customerToDeleteName = customerToDelete.Name;
 
